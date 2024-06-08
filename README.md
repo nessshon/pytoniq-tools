@@ -19,6 +19,7 @@ pip install pytoniq-tools
 
   - [Deploy Collection](https://github.com/nessshon/pytoniq-tools/blob/main/examples/nft/standard/deploy_collection.py)
   - [Mint Item](https://github.com/nessshon/pytoniq-tools/blob/main/examples/nft/standard/mint_item.py)
+  - [Batch Mint](https://github.com/nessshon/pytoniq-tools/blob/main/examples/nft/standard/batch_mint.py)
   - [Transfer Item](https://github.com/nessshon/pytoniq-tools/blob/main/examples/nft/transfer_item.py)
 
 - ##### **Editable NFTs**
