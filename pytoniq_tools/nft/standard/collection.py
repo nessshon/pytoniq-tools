@@ -17,15 +17,15 @@ CODE_HEX = "b5ee9c72410213010001fe000114ff00f4a413f4bcf2c80b0102016204020201200e
 class CollectionDataStandard(CollectionData):
 
     def __init__(
-            self,
-            owner_address: Address,
-            nex_item_index: int,
-            content: OffchainContent,
-            royalty_params: RoyaltyParams,
+        self,
+        owner_address: Address,
+        next_item_index: int,
+        content: OffchainContent,
+        royalty_params: RoyaltyParams,
     ) -> None:
         super().__init__(
             owner_address=owner_address,
-            nex_item_index=nex_item_index,
+            next_item_index=next_item_index,
             content=content,
             royalty_params=royalty_params,
             nft_item_code=ITEM_CODE_HEX,
@@ -35,20 +35,20 @@ class CollectionDataStandard(CollectionData):
 class CollectionStandard(Collection):
 
     def __init__(
-            self,
-            data: CollectionDataStandard,
+        self,
+        data: CollectionDataStandard,
     ) -> None:
         self._data = data.serialize()
         self._code = Cell.one_from_boc(CODE_HEX)
 
     @classmethod
     def build_mint_body(
-            cls,
-            index: int,
-            owner_address: Address,
-            content: OffchainCommonContent,
-            amount: int = 20000000,
-            query_id: int = 0,
+        cls,
+        index: int,
+        owner_address: Address,
+        content: OffchainCommonContent,
+        amount: int = 20000000,
+        query_id: int = 0,
     ) -> Cell:
         """
         Builds the body of the mint transaction.
@@ -77,10 +77,10 @@ class CollectionStandard(Collection):
 
     @classmethod
     def build_batch_mint_body(
-            cls,
-            data: List[Tuple[OffchainCommonContent, Address]],
-            from_index: int,
-            amount_per_one: int = 20000000,
+        cls,
+        data: List[Tuple[OffchainCommonContent, Address]],
+        from_index: int,
+        amount_per_one: int = 20000000,
     ) -> Cell:
         """
         Builds the body of the batch mint transaction.
@@ -105,7 +105,7 @@ class CollectionStandard(Collection):
                     .store_ref(content.serialize())
                     .end_cell()
                 )
-                .end_cell()
+                .end_cell(),
             )
 
         return (
