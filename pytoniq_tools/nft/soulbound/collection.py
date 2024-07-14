@@ -17,15 +17,15 @@ CODE_HEX = "b5ee9c724102140100021f000114ff00f4a413f4bcf2c80b0102016202030202cd04
 class CollectionDataSoulbound(CollectionData):
 
     def __init__(
-            self,
-            owner_address: Address,
-            nex_item_index: int,
-            content: OffchainContent,
-            royalty_params: RoyaltyParams,
+        self,
+        owner_address: Address,
+        next_item_index: int,
+        content: OffchainContent,
+        royalty_params: RoyaltyParams,
     ) -> None:
         super().__init__(
             owner_address=owner_address,
-            nex_item_index=nex_item_index,
+            next_item_index=next_item_index,
             content=content,
             royalty_params=royalty_params,
             nft_item_code=ITEM_CODE_HEX,
@@ -35,22 +35,22 @@ class CollectionDataSoulbound(CollectionData):
 class CollectionSoulbound(Collection):
 
     def __init__(
-            self,
-            data: CollectionDataSoulbound,
+        self,
+        data: CollectionDataSoulbound,
     ) -> None:
         self._data = data.serialize()
         self._code = Cell.one_from_boc(CODE_HEX)
 
     @classmethod
     def build_mint_body(
-            cls,
-            index: int,
-            content: OffchainCommonContent,
-            owner_address: Address,
-            authority_address: Address = None,
-            revoked_at: int = 0,
-            amount: int = 20000000,
-            query_id: int = 0,
+        cls,
+        index: int,
+        content: OffchainCommonContent,
+        owner_address: Address,
+        authority_address: Address = None,
+        revoked_at: int = 0,
+        amount: int = 20000000,
+        query_id: int = 0,
     ) -> Cell:
         """
         Builds the body of the mint transaction.
@@ -83,10 +83,12 @@ class CollectionSoulbound(Collection):
 
     @classmethod
     def build_batch_mint_body(
-            cls,
-            data: List[Tuple[OffchainCommonContent, Address, Optional[Address], Optional[int]]],
-            from_index: int,
-            amount_per_one: int = 20000000,
+        cls,
+        data: List[
+            Tuple[OffchainCommonContent, Address, Optional[Address], Optional[int]]
+        ],
+        from_index: int,
+        amount_per_one: int = 20000000,
     ) -> Cell:
         """
         Builds the body of the batch mint transaction.
@@ -102,7 +104,9 @@ class CollectionSoulbound(Collection):
         """
         items_dict = HashMap(key_size=64)
 
-        for i, (content, owner_address, authority_address, revoked_at) in enumerate(data, start=0):
+        for i, (content, owner_address, authority_address, revoked_at) in enumerate(
+            data, start=0
+        ):
             items_dict.set_int_key(
                 i + from_index,
                 begin_cell()
@@ -115,7 +119,7 @@ class CollectionSoulbound(Collection):
                     .store_ref(content.serialize())
                     .end_cell()
                 )
-                .end_cell()
+                .end_cell(),
             )
 
         return (

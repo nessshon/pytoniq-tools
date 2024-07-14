@@ -4,7 +4,10 @@ from pytoniq import LiteBalancer, WalletV4R2
 from pytoniq_core import Address
 
 from pytoniq_tools.nft.content import OffchainContent
-from pytoniq_tools.nft.editable.collection import CollectionEditable, CollectionDataEditable
+from pytoniq_tools.nft.editable.collection import (
+    CollectionEditable,
+    CollectionDataEditable,
+)
 from pytoniq_tools.nft.royalty_params import RoyaltyParams
 
 IS_TESTNET = True
@@ -21,7 +24,7 @@ async def main() -> None:
     collection = CollectionEditable(
         data=CollectionDataEditable(
             owner_address=OWNER_ADDRESS,
-            nex_item_index=0,
+            next_item_index=0,
             content=OffchainContent(
                 uri="ipfs://QmYb6XduLLjFXhkbz4ggDHVfPyG6gapYzzLH7tGj9vFprH",
                 suffix_uri="ipfs://QmTWEGggE2j4mnX4kMjBLzhV3K5RDxyJTby8ZPb4RjV1Ug/",
