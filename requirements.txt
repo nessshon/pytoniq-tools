@@ -1,2 +1,3 @@
-pytoniq-core~=0.1.36
-pytoniq~=0.1.38
+pytoniq~=0.1.39
+pytoncenter~=0.0.14
+pytonapi~=0.3.2
