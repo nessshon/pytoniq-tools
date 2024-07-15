@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pytoniq-tools",
-    version="0.0.3",
+    version="0.0.4",
     author="nessshon",
     description="",
     long_description=long_description,
@@ -13,8 +13,9 @@ setuptools.setup(
     url="https://github.com/nessshon/pytoniq-tools/",
     packages=setuptools.find_packages(exclude=["examples"]),
     install_requires=[
-        "pytoniq~=0.1.38",
-        "pytoniq-core~=0.1.36",
+        "pytoniq~=0.1.39",
+        "pytoncenter~=0.0.14",
+        "pytonapi~=0.3.2",
     ],
     classifiers=[
         "Programming Language :: Python :: 3.10",
