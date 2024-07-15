@@ -5,15 +5,92 @@
 ![Python Versions](https://img.shields.io/badge/Python-3.10%20--%203.12-black?color=FFE873&labelColor=3776AB)
 [![License](https://img.shields.io/github/license/nessshon/pytoniq-tools)](https://github.com/nessshon/pytoniq-tools/blob/main/LICENSE)
 
-### Installation
+## Installation
 
 ```bash
 pip install pytoniq-tools
 ```
 
-### Usage
+## Usage
 
-#### NFT Operations Guide
+### Providers
+
+- #### **LiteClient**
+  Uses `LiteBalancer` from the [pytoniq](https://github.com/yungwine/pytoniq) library and interacts with the blockchain
+  via lite servers.
+
+  <blockquote>
+  For better performance, you can pass your own config from a private lite server, which can be acquired from the <a href="https://t.me/liteserver_bot" target="_blank">bot</a>.
+  </blockquote>
+
+  <details>
+  <summary>Client Initialization</summary>
+
+  ```python
+  from pytoniq_tools.client import LiteClient
+
+  config = None
+  IS_TESTNET = True
+  client = LiteClient(config=config, is_testnet=IS_TESTNET)
+  ```
+
+  </details>
+
+- #### **TonapiClient**
+  Uses `AsyncTonapi` from the [pytonapi](https://github.com/tonkeeper/pytonapi) library and interacts with the
+  blockchain via the tonapi.io API.
+
+  <blockquote>
+  To use you need to obtain an API key on the <a href="https://tonconsole.com" target="_blank">tonconsole.com</a>.
+  </blockquote>
+
+  <details>
+  <summary>Client Initialization</summary>
+
+  ```python
+  from pytoniq_tools.client import TonapiClient
+
+  API_KEY = ""
+  IS_TESTNET = True
+  client = TonapiClient(api_key=API_KEY, is_testnet=IS_TESTNET)
+  ```
+
+  </details>
+
+- #### **ToncenterClient**
+  Uses `AsyncTonCenterClientV3` from the [pytoncenter](https://github.com/Ton-Dynasty/pytoncenter) library and interacts
+  with the blockchain via the toncenter.com API.
+
+  <blockquote>
+  To use you need to obtain an API key from the <a href="https://t.me/tonapibot" target="_blank">bot</a>.
+  </blockquote>
+
+  <details>
+  <summary>Client Initialization</summary>
+
+  ```python
+  from pytoniq_tools.client import ToncenterClient
+
+  API_KEY = ""
+  IS_TESTNET = True
+  client = ToncenterClient(api_key=API_KEY, is_testnet=IS_TESTNET)
+  ```
+
+  </details>
+
+### Wallet Operation Guide
+
+- ##### **Wallet V3**
+  - [Create Wallet](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v3/create_wallet.py)
+  - [Deploy Wallet](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v3/deploy_wallet.py)
+  - [Transfer TON](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v3/transfer_ton.py)
+
+- ##### **Wallet V4**
+  - [Create Wallet](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v4/create_wallet.py)
+  - [Deploy Wallet](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v4/deploy_wallet.py)
+  - [Transfer TON](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v4/transfer_ton.py)
+
+### NFT Operations Guide
 
 - ##### **Standard NFTs**
 
