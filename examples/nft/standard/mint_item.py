@@ -1,26 +1,31 @@
-import asyncio
-
-from pytoniq import LiteBalancer, WalletV4R2
 from pytoniq_core import Address
 
+from pytoniq_tools.client import TonapiClient
 from pytoniq_tools.nft.content import OffchainCommonContent
 from pytoniq_tools.nft.standard.collection import CollectionStandard
-from pytoniq_tools.nft.standard.item import ItemStandard, ItemDataStandard
+from pytoniq_tools.nft.standard.item import ItemStandard
+from pytoniq_tools.wallet import WalletV4R2
 
+API_KEY = ""
 IS_TESTNET = True
 
-MNEMONICS = "a b c ..."  # noqa
+MNEMONIC = []
 
 OWNER_ADDRESS = Address("EQC-3ilVr-W0Uc3pLrGJElwSaFxvhXXfkiQA3EwdVBHNNess")  # noqa
-
 COLLECTION_ADDRESS = Address("EQBkBF5qLV0dmSR5LGH3VEjwiLAPW-ESiF7zOSDL8UUcdWW-")  # noqa
 
 
 async def main() -> None:
-    provider = await get_provider()
-    wallet = await get_wallet(provider)
+    client = TonapiClient(api_key=API_KEY, is_testnet=IS_TESTNET)
+    wallet, _, _, _ = WalletV4R2.from_mnemonic(MNEMONIC, client)
 
-    index = 100
+    index = 0
+
+    item = ItemStandard(
+        index=index,
+        collection_address=COLLECTION_ADDRESS,
+    )
+
     body = CollectionStandard.build_mint_body(
         index=index,
         owner_address=OWNER_ADDRESS,
@@ -29,42 +34,17 @@ async def main() -> None:
         ),
     )
 
-    await wallet.transfer(
+    tx_hash = await wallet.transfer(
         destination=COLLECTION_ADDRESS,
+        amount=0.02,
         body=body,
-        amount=int(0.02 * 1e9),
-    )
-
-    item = ItemStandard(
-        data=ItemDataStandard(
-            index=index,
-            collection_address=COLLECTION_ADDRESS,
-        )
     )
 
     print(f"Minted item: {item.address.to_str()}")
-
-
-async def get_provider() -> LiteBalancer:
-    if IS_TESTNET:
-        provider = LiteBalancer.from_testnet_config(
-            trust_level=2,
-        )
-    else:
-        provider = LiteBalancer.from_mainnet_config(
-            trust_level=2,
-        )
-
-    await provider.start_up()
-    return provider
-
-
-async def get_wallet(provider: LiteBalancer) -> WalletV4R2:
-    return await WalletV4R2.from_mnemonic(
-        provider=provider,
-        mnemonics=MNEMONICS.split(" "),
-    )
+    print(f"Transaction hash: {tx_hash}")
 
 
 if __name__ == "__main__":
+    import asyncio
+
     asyncio.run(main())
