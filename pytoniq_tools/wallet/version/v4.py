@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Optional, List
 
-from pytoniq_core import Cell
+from pytoniq_core import Cell, WalletMessage
 
 from .._base import Wallet
 from ..data import WalletV4Data
@@ -10,8 +10,33 @@ class WalletV4R1(Wallet):
     CODE_HEX = "b5ee9c72410215010002f5000114ff00f4a413f4bcf2c80b010201200203020148040504f8f28308d71820d31fd31fd31f02f823bbf263ed44d0d31fd31fd3fff404d15143baf2a15151baf2a205f901541064f910f2a3f80024a4c8cb1f5240cb1f5230cbff5210f400c9ed54f80f01d30721c0009f6c519320d74a96d307d402fb00e830e021c001e30021c002e30001c0039130e30d03a4c8cb1f12cb1fcbff1112131403eed001d0d3030171b0915be021d749c120915be001d31f218210706c7567bd228210626c6e63bdb022821064737472bdb0925f03e002fa403020fa4401c8ca07cbffc9d0ed44d0810140d721f404305c810108f40a6fa131b3925f05e004d33fc8258210706c7567ba9131e30d248210626c6e63bae30004060708020120090a005001fa00f404308210706c7567831eb17080185005cb0527cf165003fa02f40012cb69cb1f5210cb3f0052f8276f228210626c6e63831eb17080185005cb0527cf1624fa0214cb6a13cb1f5230cb3f01fa02f4000092821064737472ba8e3504810108f45930ed44d0810140d720c801cf16f400c9ed54821064737472831eb17080185004cb0558cf1622fa0212cb6acb1fcb3f9410345f04e2c98040fb000201200b0c0059bd242b6f6a2684080a06b90fa0218470d4080847a4937d29910ce6903e9ff9837812801b7810148987159f31840201580d0e0011b8c97ed44d0d70b1f8003db29dfb513420405035c87d010c00b23281f2fff274006040423d029be84c600201200f100019adce76a26840206b90eb85ffc00019af1df6a26840106b90eb858fc0006ed207fa00d4d422f90005c8ca0715cbffc9d077748018c8cb05cb0222cf165005fa0214cb6b12ccccc971fb00c84014810108f451f2a702006c810108d718c8542025810108f451f2a782106e6f746570748018c8cb05cb025004cf16821005f5e100fa0213cb6a12cb1fc971fb00020072810108d718305202810108f459f2a7f82582106473747270748018c8cb05cb025005cf16821005f5e100fa0214cb6a13cb1f12cb3fc973fb00000af400c9ed5446a9f34f"  # noqa
 
     @classmethod
-    def create_data(cls, public_key: bytes, seqno: int, wallet_id: int, plugins: Optional[Cell] = None) -> WalletV4Data:
+    def _create_data(
+            cls,
+            public_key: bytes,
+            seqno: int,
+            wallet_id: int,
+            plugins: Optional[Cell] = None,
+    ) -> WalletV4Data:
         return WalletV4Data(wallet_id=wallet_id, seqno=seqno, public_key=public_key, plugins=plugins)
+
+    @classmethod
+    def _raw_create_transfer_msg(
+            cls,
+            private_key: bytes,
+            messages: List[WalletMessage],
+            seqno: int = 0,
+            wallet_id: int = 698983191,
+            valid_until: Optional[int] = None,
+            op_code: Optional[int] = 0,
+    ) -> Cell:
+        return super()._raw_create_transfer_msg(
+            private_key=private_key,
+            messages=messages,
+            seqno=seqno,
+            wallet_id=wallet_id,
+            valid_until=valid_until,
+            op_code=op_code,
+        )
 
 
 class WalletV4R2(WalletV4R1):

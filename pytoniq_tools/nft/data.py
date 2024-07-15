@@ -9,12 +9,12 @@ from .royalty_params import RoyaltyParams
 class CollectionData(TlbScheme):
 
     def __init__(
-        self,
-        owner_address: Address,
-        next_item_index: int,
-        content: OffchainContent,
-        royalty_params: RoyaltyParams,
-        nft_item_code: str = None,
+            self,
+            owner_address: Address,
+            next_item_index: int,
+            content: OffchainContent,
+            royalty_params: RoyaltyParams,
+            nft_item_code: str = None,
     ) -> None:
         self.owner_address = owner_address
         self.next_item_index = next_item_index
@@ -40,18 +40,16 @@ class CollectionData(TlbScheme):
             next_item_index=cell_slice.load_uint(64),
             content=OffchainContent.deserialize(cell_slice.load_ref().begin_parse()),
             nft_item_code=cell_slice.load_ref().begin_parse(),
-            royalty_params=RoyaltyParams.deserialize(
-                cell_slice.load_ref().begin_parse()
-            ),
+            royalty_params=RoyaltyParams.deserialize(cell_slice.load_ref().begin_parse()),
         )
 
 
 class ItemData(TlbScheme):
 
     def __init__(
-        self,
-        index: int,
-        collection_address: Address,
+            self,
+            index: int,
+            collection_address: Address,
     ) -> None:
         self.index = index
         self.collection_address = collection_address

@@ -1,10 +1,20 @@
 from typing import Optional, Union
 
-from pytoniq_core import StateInit, Cell, Address, begin_cell, MessageAny, ExternalMsgInfo, CurrencyCollection, \
-    InternalMsgInfo
+from pytoniq_core import (
+    Address,
+    Cell,
+    StateInit,
+    CurrencyCollection,
+    ExternalMsgInfo,
+    InternalMsgInfo,
+    MessageAny,
+    begin_cell,
+)
 
 
 class Contract:
+    CODE_HEX: str
+
     _code: Cell
     _data: Cell
 
@@ -33,32 +43,19 @@ class Contract:
         )
 
     @classmethod
-    def create_external_msg(
+    def _create_external_msg(
             cls,
-            src: Optional[str] = None,
-            dest: Optional[str] = None,
+            src: Optional[Address] = None,
+            dest: Optional[Address] = None,
             import_fee: int = 0,
             state_init: Optional[StateInit] = None,
-            body: Cell = None,
+            body: Cell = Cell.empty(),
     ) -> MessageAny:
-        info = ExternalMsgInfo(
-            src=Address(src) if src else None,
-            dest=Address(dest) if dest else None,
-            import_fee=import_fee,
-        )
-
-        if body is None:
-            body = Cell.empty()
-
-        message = MessageAny(
-            info=info,
-            init=state_init,
-            body=body,
-        )
-        return message
+        info = ExternalMsgInfo(src, dest, import_fee)
+        return MessageAny(info, state_init, body)
 
     @classmethod
-    def create_internal_msg(
+    def _create_internal_msg(
             cls,
             ihr_disabled: bool = True,
             bounce: bool = None,
@@ -74,34 +71,25 @@ class Contract:
             body: Cell = None,
     ) -> MessageAny:
         if isinstance(value, int):
-            value = CurrencyCollection(
-                grams=value,
-                other=None,
-            )
+            value = CurrencyCollection(value)
 
         if bounce is None:
             bounce = dest.is_bounceable
 
         info = InternalMsgInfo(
-            ihr_disabled=ihr_disabled,
-            bounce=bounce,
-            bounced=bounced,
-            src=src,
-            dest=dest,
-            value=value,
-            ihr_fee=ihr_fee,
-            fwd_fee=fwd_fee,
-            created_lt=created_lt,
-            created_at=created_at,
+            ihr_disabled,
+            bounce,
+            bounced,
+            src,
+            dest,
+            value,
+            ihr_fee,
+            fwd_fee,
+            created_lt,
+            created_at,
         )
 
         if body is None:
             body = Cell.empty()
 
-        message = MessageAny(
-            info=info,
-            init=state_init,
-            body=body,
-        )
-
-        return message
+        return MessageAny(info, state_init, body)
