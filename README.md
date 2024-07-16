@@ -19,9 +19,7 @@ pip install pytoniq-tools
   Uses `LiteBalancer` from the [pytoniq](https://github.com/yungwine/pytoniq) library and interacts with the blockchain
   via lite servers.
 
-  <blockquote>
   For better performance, you can pass your own config from a private lite server, which can be acquired from the <a href="https://t.me/liteserver_bot" target="_blank">bot</a>.
-  </blockquote>
 
   <details>
   <summary>Client Initialization</summary>
@@ -40,9 +38,7 @@ pip install pytoniq-tools
   Uses `AsyncTonapi` from the [pytonapi](https://github.com/tonkeeper/pytonapi) library and interacts with the
   blockchain via the tonapi.io API.
 
-  <blockquote>
   To use you need to obtain an API key on the <a href="https://tonconsole.com" target="_blank">tonconsole.com</a>.
-  </blockquote>
 
   <details>
   <summary>Client Initialization</summary>
@@ -61,9 +57,7 @@ pip install pytoniq-tools
   Uses `AsyncTonCenterClientV3` from the [pytoncenter](https://github.com/Ton-Dynasty/pytoncenter) library and interacts
   with the blockchain via the toncenter.com API.
 
-  <blockquote>
   To use you need to obtain an API key from the <a href="https://t.me/tonapibot" target="_blank">bot</a>.
-  </blockquote>
 
   <details>
   <summary>Client Initialization</summary>
