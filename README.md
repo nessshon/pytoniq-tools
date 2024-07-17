@@ -81,6 +81,11 @@ pip install pytoniq-tools
   - [Deploy Wallet](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v4/deploy_wallet.py)
   - [Transfer TON](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v4/transfer_ton.py)
 
+- ##### **HighloadWallet V2**
+  - [Create Wallet](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/highload/create_wallet.py)
+  - [Deploy Wallet](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/highload/deploy_wallet.py)
+  - [Transfer TON](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/highload/transfer_ton.py)
+
 ### NFT Operations Guide
 
 - ##### **Standard NFTs**
