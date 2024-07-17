@@ -12,6 +12,7 @@ from .data import WalletV3Data, WalletV4Data, HighloadWalletV2Data
 from ..client import Client, LiteClient, TonapiClient, ToncenterClient
 from ..contract import Contract
 from ..exceptions import UnknownClientError
+from ..nft import ItemStandard
 from ..utils import message_to_boc_hex
 
 
@@ -202,6 +203,29 @@ class Wallet(Contract):
                     **kwargs
                 ),
             ],
+        )
+
+        return message_hash
+
+    async def transfer_nft(
+            self,
+            destination: Union[Address, str],
+            item_address: Union[Address, str],
+            amount: Union[int, float] = 0.05,
+    ) -> str:
+        if isinstance(destination, str):
+            destination = Address(destination)
+        if isinstance(item_address, str):
+            item_address = Address(item_address)
+
+        body = ItemStandard.build_transfer_body(
+            new_owner_address=destination,
+        )
+
+        message_hash = await self.transfer(
+            destination=item_address,
+            amount=amount,
+            body=body,
         )
 
         return message_hash

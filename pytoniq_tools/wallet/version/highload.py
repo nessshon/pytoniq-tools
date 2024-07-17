@@ -8,9 +8,10 @@ from pytoniq_core import WalletMessage, Cell, begin_cell, HashMap, MessageAny
 from pytoniq_core.crypto.signature import sign_message
 
 from pytoniq_tools.client import Client
+from pytoniq_tools.nft import ItemStandard
 from pytoniq_tools.utils import message_to_boc_hex
 from pytoniq_tools.wallet import Wallet
-from pytoniq_tools.wallet.data import HighloadWalletV2Data, TransferData
+from pytoniq_tools.wallet.data import HighloadWalletV2Data, TransferData, TransferItemData
 
 
 class HighloadWalletV2(Wallet):
@@ -133,6 +134,21 @@ class HighloadWalletV2(Wallet):
                 body=data.body,
                 state_init=data.state_init,
                 **data.other,
+            ) for data in data_list
+        ]
+
+        message_hash = await self.raw_transfer(messages=messages)
+
+        return message_hash
+
+    async def transfer_nft(self, data_list: List[TransferItemData]) -> str:  # noqa
+        messages = [
+            self._create_wallet_internal_message(
+                destination=data.item_address,
+                value=amount_to_nano(data.amount),
+                body=ItemStandard.build_transfer_body(
+                    new_owner_address=data.destination,
+                ),
             ) for data in data_list
         ]
 

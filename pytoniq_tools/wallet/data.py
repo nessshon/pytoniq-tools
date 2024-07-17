@@ -25,6 +25,25 @@ class TransferData:
         self.other = kwargs
 
 
+class TransferItemData:
+
+    def __init__(
+            self,
+            destination: Union[Address, str],
+            item_address: Union[Address, str],
+            amount: Union[int, float] = 0.05,
+    ) -> None:
+        if isinstance(destination, str):
+            destination = Address(destination)
+
+        if isinstance(item_address, str):
+            item_address = Address(item_address)
+
+        self.destination = destination
+        self.item_address = item_address
+        self.amount = amount
+
+
 class WalletData(TlbScheme):
 
     def __init__(self, **kwargs) -> None:
