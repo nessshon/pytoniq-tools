@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pytoniq-tools",
-    version="0.0.4",
+    version="0.0.5",
     author="nessshon",
     description="",
     long_description=long_description,
