@@ -1,8 +1,28 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional, Union
 
-from pytoniq_core import Builder, Cell, Slice, TlbScheme, WalletMessage, HashMap, begin_cell
+from pytoniq_core import Builder, Cell, Slice, TlbScheme, WalletMessage, HashMap, begin_cell, Address, StateInit
+
+
+class TransferData:
+
+    def __init__(
+            self,
+            destination: Union[Address, str],
+            amount: Union[int, float],
+            body: Optional[Union[Cell, str]] = Cell.empty(),
+            state_init: Optional[StateInit] = None,
+            **kwargs,
+    ) -> None:
+        if isinstance(destination, str):
+            destination = Address(destination)
+
+        self.destination = destination
+        self.amount = amount
+        self.body = body
+        self.state_init = state_init
+        self.other = kwargs
 
 
 class WalletData(TlbScheme):
@@ -27,15 +47,15 @@ class WalletV3Data(WalletData):
             seqno: Optional[int] = 0,
             wallet_id: Optional[int] = 698983191
     ) -> None:
+        super().__init__(
+            wallet_id=wallet_id,
+            seqno=seqno,
+            public_key=public_key,
+        )
+
         self.public_key = public_key
         self.seqno = seqno
         self.wallet_id = wallet_id
-
-        super().__init__(
-            wallet_id=self.wallet_id,
-            seqno=self.seqno,
-            public_key=self.public_key,
-        )
 
     def serialize(self) -> Cell:
         return (
@@ -64,17 +84,17 @@ class WalletV4Data(WalletData):
             wallet_id: Optional[int] = 698983191,
             plugins: Optional[Cell] = None,
     ) -> None:
+        super().__init__(
+            wallet_id=wallet_id,
+            seqno=seqno,
+            public_key=public_key,
+            plugins=plugins,
+        )
+
         self.public_key = public_key
         self.seqno = seqno
         self.wallet_id = wallet_id
         self.plugins = plugins
-
-        super().__init__(
-            wallet_id=self.wallet_id,
-            seqno=self.seqno,
-            public_key=self.public_key,
-            plugins=self.plugins,
-        )
 
     def serialize(self) -> Cell:
         return (
@@ -96,7 +116,7 @@ class WalletV4Data(WalletData):
         )
 
 
-class HighloadWalletData(WalletData):
+class HighloadWalletV2Data(WalletData):
 
     def __init__(
             self,
@@ -105,17 +125,17 @@ class HighloadWalletData(WalletData):
             last_cleaned: Optional[int] = None,
             old_queries: Optional[dict] = None
     ) -> None:
+        super().__init__(
+            wallet_id=wallet_id,
+            last_cleaned=last_cleaned,
+            public_key=public_key,
+            old_queries=old_queries,
+        )
+
         self.public_key = public_key
         self.wallet_id = wallet_id
         self.last_cleaned = last_cleaned
         self.old_queries = old_queries
-
-        super().__init__(
-            wallet_id=self.wallet_id,
-            last_cleaned=self.last_cleaned,
-            public_key=self.public_key,
-            old_queries=self.old_queries,
-        )
 
     @classmethod
     def old_queries_serializer(cls, src: WalletMessage, dest: Builder) -> None:
@@ -141,7 +161,7 @@ class HighloadWalletData(WalletData):
         )
 
     @classmethod
-    def deserialize(cls, cell_slice: Slice) -> HighloadWalletData:
+    def deserialize(cls, cell_slice: Slice) -> HighloadWalletV2Data:
         return cls(
             wallet_id=cell_slice.load_uint(32),
             last_cleaned=cell_slice.load_uint(64),

@@ -8,7 +8,7 @@ from pytoniq_core import Address, Cell, StateInit, MessageAny, WalletMessage, be
 from pytoniq_core.crypto.keys import mnemonic_new, mnemonic_to_private_key
 from pytoniq_core.crypto.signature import sign_message
 
-from .data import WalletV3Data, WalletV4Data
+from .data import WalletV3Data, WalletV4Data, HighloadWalletV2Data
 from ..client import Client, LiteClient, TonapiClient, ToncenterClient
 from ..contract import Contract
 from ..exceptions import UnknownClientError
@@ -36,9 +36,10 @@ class Wallet(Contract):
     def _create_data(
             cls,
             public_key: bytes,
-            seqno: int,
-            wallet_id: int,
-    ) -> WalletV3Data | WalletV4Data:
+            seqno: Optional[int] = 0,
+            wallet_id: Optional[int] = 698983191,
+            **kwargs,
+    ) -> Union[WalletV3Data | WalletV4Data, HighloadWalletV2Data]:
         raise NotImplementedError
 
     async def _create_deploy_msg(self) -> MessageAny:
@@ -186,6 +187,7 @@ class Wallet(Contract):
             amount: Union[int, float] = 0,
             body: Optional[Cell, str] = Cell.empty(),
             state_init: Optional[StateInit] = None,
+            **kwargs
     ) -> str:
         if isinstance(destination, str):
             destination = Address(destination)
@@ -197,6 +199,7 @@ class Wallet(Contract):
                     value=amount_to_nano(amount),
                     body=body,
                     state_init=state_init,
+                    **kwargs
                 ),
             ],
         )
