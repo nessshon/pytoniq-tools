@@ -5,6 +5,9 @@
 ![Python Versions](https://img.shields.io/badge/Python-3.10%20--%203.12-black?color=FFE873&labelColor=3776AB)
 [![License](https://img.shields.io/github/license/nessshon/pytoniq-tools)](https://github.com/nessshon/pytoniq-tools/blob/main/LICENSE)
 
+![Downloads](https://pepy.tech/badge/pytoniq-tools)
+![Downloads](https://pepy.tech/badge/pytoniq-tools/month)
+![Downloads](https://pepy.tech/badge/pytoniq-tools/week)
 ## Installation
 
 ```bash
