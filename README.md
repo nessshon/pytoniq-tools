@@ -2,8 +2,14 @@
 
 [![TON](https://img.shields.io/badge/TON-grey?logo=TON&logoColor=40AEF0)](https://ton.org)
 [![PyPI](https://img.shields.io/pypi/v/pytoniq-tools.svg?color=FFE873&labelColor=3776AB)](https://pypi.python.org/pypi/pytoniq-tools)
-![Python Versions](https://img.shields.io/badge/Python-3.10%20--%203.12-black?color=FFE873&labelColor=3776AB)
+![Python Versions](https://img.shields.io/badge/Python-3.10%20--%203.11-black?color=FFE873&labelColor=3776AB)
 [![License](https://img.shields.io/github/license/nessshon/pytoniq-tools)](https://github.com/nessshon/pytoniq-tools/blob/main/LICENSE)
+
+**Pytoniq Tools** is a high-level OOP library for Python designed for interacting with the TON. It is built on
+top of three of the most popular libraries for working with TON in
+Python: [pytoniq](https://github.com/yungwine/pytoniq), [pytonapi](https://github.com/tonkeeper/pytonapi),
+and [pytoncenter](https://github.com/Ton-Dynasty/pytoncenter). By integrating these libraries, pytoniq-tools offers a
+convenient and flexible tool for developers.
 
 ![Downloads](https://pepy.tech/badge/pytoniq-tools)
 ![Downloads](https://pepy.tech/badge/pytoniq-tools/month)
