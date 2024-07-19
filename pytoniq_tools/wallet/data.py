@@ -44,6 +44,39 @@ class TransferItemData:
         self.amount = amount
 
 
+class TransferJettonData:
+
+    def __init__(
+            self,
+            destination: Union[Address, str],
+            jetton_master_address: Union[Address, str],
+            jetton_amount: Union[int, float],
+            comment: Optional[str] = None,
+            amount: Union[int, float] = 0.05,
+    ) -> None:
+        if isinstance(destination, str):
+            destination = Address(destination)
+
+        if isinstance(jetton_master_address, str):
+            jetton_master_address = Address(jetton_master_address)
+
+        if comment is not None:
+            forward_payload = (
+                begin_cell()
+                .store_uint(0, 32)
+                .store_snake_string(comment)
+                .end_cell()
+            )
+        else:
+            forward_payload = Cell.empty()
+
+        self.destination = destination
+        self.jetton_master_address = jetton_master_address
+        self.jetton_amount = jetton_amount
+        self.amount = amount
+        self.forward_payload = forward_payload
+
+
 class WalletData(TlbScheme):
 
     def __init__(self, **kwargs) -> None:
@@ -142,7 +175,7 @@ class HighloadWalletV2Data(WalletData):
             public_key: bytes,
             wallet_id: Optional[int] = 698983191,
             last_cleaned: Optional[int] = None,
-            old_queries: Optional[dict] = None
+            old_queries: Optional[dict] = None,
     ) -> None:
         super().__init__(
             wallet_id=wallet_id,

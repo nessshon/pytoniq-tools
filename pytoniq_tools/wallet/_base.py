@@ -12,6 +12,7 @@ from .data import WalletV3Data, WalletV4Data, HighloadWalletV2Data
 from ..client import Client, LiteClient, TonapiClient, ToncenterClient
 from ..contract import Contract
 from ..exceptions import UnknownClientError
+from ..jetton import Jetton
 from ..nft import ItemStandard
 from ..utils import message_to_boc_hex
 
@@ -95,7 +96,7 @@ class Wallet(Contract):
         )
 
     @classmethod
-    def _create_wallet_internal_message(
+    def create_wallet_internal_message(
             cls,
             destination: Address,
             send_mode: int = 3,
@@ -128,9 +129,12 @@ class Wallet(Contract):
     @classmethod
     def from_mnemonic(
             cls,
-            mnemonic: List[str],
+            mnemonic: Union[List[str], str],
             client: Optional[Client] = None,
     ) -> Tuple[Wallet, bytes, bytes, List[str]]:
+        if isinstance(mnemonic, str):
+            mnemonic = mnemonic.split(" ")
+
         public_key, private_key = mnemonic_to_private_key(mnemonic)
         return cls(client, public_key, private_key), public_key, private_key, mnemonic
 
@@ -195,7 +199,7 @@ class Wallet(Contract):
 
         message_hash = await self.raw_transfer(
             messages=[
-                self._create_wallet_internal_message(
+                self.create_wallet_internal_message(
                     destination=destination,
                     value=amount_to_nano(amount),
                     body=body,
@@ -224,6 +228,50 @@ class Wallet(Contract):
 
         message_hash = await self.transfer(
             destination=item_address,
+            amount=amount,
+            body=body,
+        )
+
+        return message_hash
+
+    async def transfer_jetton(
+            self,
+            destination: Union[Address, str],
+            jetton_master_address: Union[Address, str],
+            jetton_amount: Union[int, float],
+            comment: Optional[str] = None,
+            amount: Union[int, float] = 0.05,
+    ) -> str:
+        if isinstance(destination, str):
+            destination = Address(destination)
+        if isinstance(jetton_master_address, str):
+            jetton_master_address = Address(jetton_master_address)
+
+        if comment is not None:
+            forward_payload = (
+                begin_cell()
+                .store_uint(0, 32)
+                .store_snake_string(comment)
+                .end_cell()
+            )
+        else:
+            forward_payload = Cell.empty()
+
+        jetton_wallet_address = await Jetton(self.client).get_jetton_wallet_address(
+            jetton_master_address=jetton_master_address.to_str(),
+            owner_address=self.address.to_str(),
+        )
+
+        body = Jetton.build_transfer_body(
+            recipient_address=destination,
+            response_address=self.address,
+            jetton_amount=amount_to_nano(jetton_amount),
+            forward_payload=forward_payload,
+            forward_amount=1,
+        )
+
+        message_hash = await self.transfer(
+            destination=jetton_wallet_address,
             amount=amount,
             body=body,
         )

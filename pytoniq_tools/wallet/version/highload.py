@@ -1,17 +1,18 @@
 from __future__ import annotations
 
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 from pytonapi.utils import amount_to_nano
 from pytoniq.contract.utils import generate_query_id
 from pytoniq_core import WalletMessage, Cell, begin_cell, HashMap, MessageAny
 from pytoniq_core.crypto.signature import sign_message
 
-from pytoniq_tools.client import Client
-from pytoniq_tools.nft import ItemStandard
-from pytoniq_tools.utils import message_to_boc_hex
-from pytoniq_tools.wallet import Wallet
-from pytoniq_tools.wallet.data import HighloadWalletV2Data, TransferData, TransferItemData
+from ...client import Client
+from ...jetton import Jetton
+from ...nft import ItemStandard
+from ...utils import message_to_boc_hex
+from ...wallet import Wallet
+from ...wallet.data import HighloadWalletV2Data, TransferData, TransferItemData, TransferJettonData
 
 
 class HighloadWalletV2(Wallet):
@@ -42,7 +43,7 @@ class HighloadWalletV2(Wallet):
     @classmethod
     def from_mnemonic(
             cls,
-            mnemonic: List[str],
+            mnemonic: Union[List[str], str],
             client: Optional[Client] = None,
     ) -> Tuple[HighloadWalletV2, bytes, bytes, List[str]]:
         return super().from_mnemonic(mnemonic, client)  # type: ignore
@@ -128,7 +129,7 @@ class HighloadWalletV2(Wallet):
 
     async def transfer(self, data_list: List[TransferData]) -> str:  # noqa
         messages = [
-            self._create_wallet_internal_message(
+            self.create_wallet_internal_message(
                 destination=data.destination,
                 value=amount_to_nano(data.amount),
                 body=data.body,
@@ -143,7 +144,7 @@ class HighloadWalletV2(Wallet):
 
     async def transfer_nft(self, data_list: List[TransferItemData]) -> str:  # noqa
         messages = [
-            self._create_wallet_internal_message(
+            self.create_wallet_internal_message(
                 destination=data.item_address,
                 value=amount_to_nano(data.amount),
                 body=ItemStandard.build_transfer_body(
@@ -151,6 +152,38 @@ class HighloadWalletV2(Wallet):
                 ),
             ) for data in data_list
         ]
+
+        message_hash = await self.raw_transfer(messages=messages)
+
+        return message_hash
+
+    async def transfer_jetton(self, data_list: List[TransferJettonData]) -> str:  # noqa
+        messages = []
+        jetton_master_address = None
+        jetton_wallet_address = None
+
+        for data in data_list:
+            if jetton_master_address is None or jetton_master_address != data.jetton_master_address:
+                jetton_wallet_address = await Jetton(self.client).get_jetton_wallet_address(
+                    jetton_master_address=data.jetton_master_address.to_str(),
+                    owner_address=self.address.to_str(),
+                )
+                jetton_master_address = data.jetton_master_address
+                jetton_wallet_address = jetton_wallet_address
+
+            messages.append(
+                self.create_wallet_internal_message(
+                    destination=jetton_wallet_address,
+                    value=amount_to_nano(data.amount),
+                    body=Jetton.build_transfer_body(
+                        recipient_address=data.destination,
+                        response_address=self.address,
+                        jetton_amount=amount_to_nano(data.jetton_amount),
+                        forward_payload=data.forward_payload,
+                        forward_amount=1,
+                    ),
+                )
+            )
 
         message_hash = await self.raw_transfer(messages=messages)
 
