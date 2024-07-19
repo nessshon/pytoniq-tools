@@ -79,21 +79,24 @@ pip install pytoniq-tools
   - [Deploy Wallet](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v3/deploy_wallet.py)
   - [Transfer TON](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v3/transfer_ton.py)
   - [Transfer NFT](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v3/transfer_nft.py)
+  - [Transfer Jetton](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v3/transfer_jetton.py)
 
 - ##### **Wallet V4**
   - [Create Wallet](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v4/create_wallet.py)
   - [Deploy Wallet](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v4/deploy_wallet.py)
   - [Transfer TON](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v4/transfer_ton.py)
   - [Transfer NFT](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v4/transfer_nft.py)
+  - [Transfer Jetton](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/v4/transfer_jetton.py)
 
 - ##### **HighloadWallet V2**
   - [Create Wallet](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/highload/create_wallet.py)
   - [Deploy Wallet](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/highload/deploy_wallet.py)
   - [Transfer TON](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/highload/transfer_ton.py)
   - [Transfer NFT](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/highload/transfer_nft.py)
+  - [Transfer Jetton](https://github.com/nessshon/pytoniq-tools/blob/main/examples/wallet/highload/transfer_jetton.py)
 
 ### NFT Operations Guide
-
+ 
 - ##### **Standard NFTs**
 
   - [Deploy Collection](https://github.com/nessshon/pytoniq-tools/blob/main/examples/nft/standard/deploy_collection.py)
