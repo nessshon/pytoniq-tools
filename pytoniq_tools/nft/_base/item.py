@@ -29,3 +29,19 @@ class Item(Contract):
             .store_maybe_ref(forward_payload)
             .end_cell()
         )
+
+    @classmethod
+    def build_ownership_assigned_body(
+            cls,
+            prev_owner_address: Address,
+            forward_payload: Cell = Cell.empty(),
+            query_id: int = 0,
+    ) -> Cell:
+        return (
+            begin_cell()
+            .store_uint(OWNERSHIP_ASSIGNED_ITEM_OPCODE, 32)
+            .store_uint(query_id, 64)
+            .store_address(prev_owner_address)
+            .store_maybe_ref(forward_payload)
+            .end_cell()
+        )
