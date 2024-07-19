@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Union
 
 from pytoniq_core import Cell, WalletMessage
 
@@ -19,7 +19,7 @@ class WalletV4R1(Wallet):
     @classmethod
     def from_mnemonic(
             cls,
-            mnemonic: List[str],
+            mnemonic: Union[List[str], str],
             client: Optional[Client] = None,
     ) -> Tuple[WalletV4R1, bytes, bytes, List[str]]:
         return super().from_mnemonic(mnemonic, client)  # type: ignore
@@ -64,7 +64,7 @@ class WalletV4R2(WalletV4R1):
     @classmethod
     def from_mnemonic(
             cls,
-            mnemonic: List[str],
+            mnemonic: Union[List[str], str],
             client: Optional[Client] = None,
     ) -> Tuple[WalletV4R2, bytes, bytes, List[str]]:
         return super().from_mnemonic(mnemonic, client)  # type: ignore

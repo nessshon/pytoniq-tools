@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Tuple, List, Optional
+from typing import Tuple, List, Optional, Union
 
 from .._base import Wallet
 from ..data import WalletV3Data
@@ -17,7 +17,7 @@ class WalletV3R1(Wallet):
     @classmethod
     def from_mnemonic(
             cls,
-            mnemonic: List[str],
+            mnemonic: Union[List[str], str],
             client: Optional[Client] = None,
     ) -> Tuple[WalletV3R1, bytes, bytes, List[str]]:
         return super().from_mnemonic(mnemonic, client)  # type: ignore
@@ -42,7 +42,7 @@ class WalletV3R2(WalletV3R1):
     @classmethod
     def from_mnemonic(
             cls,
-            mnemonic: List[str],
+            mnemonic: Union[List[str], str],
             client: Optional[Client] = None,
     ) -> Tuple[WalletV3R2, bytes, bytes, List[str]]:
         return super().from_mnemonic(mnemonic, client)  # type: ignore
