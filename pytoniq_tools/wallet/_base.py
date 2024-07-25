@@ -269,6 +269,7 @@ class Wallet(Contract):
         :param destination: The destination address.
         :param amount: The amount to transfer. Defaults to 0.
         :param body: The body of the message. Defaults to an empty cell.
+            If a string is provided, it will be used as a transaction comment.
         :param state_init: The state initialization. Defaults to None.
         :param kwargs: Additional arguments.
         :return: The hash of the transfer message.
@@ -315,6 +316,8 @@ class Wallet(Contract):
             self,
             destination: Union[Address, str],
             item_address: Union[Address, str],
+            forward_payload: Optional[Cell, str] = Cell.empty(),
+            forward_amount: Optional[int, float] = 0.001,
             amount: Optional[Union[int, float]] = 0.05,
     ) -> str:
         """
@@ -322,6 +325,11 @@ class Wallet(Contract):
 
         :param destination: The destination address.
         :param item_address: The NFT item address.
+        :param forward_payload: Optional forward payload.
+            If a string is provided, it will be used as a transaction comment.
+            If forward_amount is greater than 0, this payload will be included with the notification to the new owner.
+        :param forward_amount: Forward amount in TON. Defaults to 0.001.
+            A notification will be sent to the new owner if the amount is greater than 0;
         :param amount: The amount to transfer. Defaults to 0.05.
         :return: The hash of the NFT transfer message.
         """
@@ -330,14 +338,22 @@ class Wallet(Contract):
         if isinstance(item_address, str):
             item_address = Address(item_address)
 
-        body = ItemStandard.build_transfer_body(
-            new_owner_address=destination,
-        )
+        if isinstance(forward_payload, str):
+            forward_payload = (
+                begin_cell()
+                .store_uint(0, 32)
+                .store_string(forward_payload)
+                .end_cell()
+            )
 
         message_hash = await self.transfer(
             destination=item_address,
             amount=amount,
-            body=body,
+            body=ItemStandard.build_transfer_body(
+                new_owner_address=destination,
+                forward_payload=forward_payload,
+                forward_amount=amount_to_nano(forward_amount),
+            ),
         )
 
         return message_hash
@@ -355,6 +371,8 @@ class Wallet(Contract):
                 value=amount_to_nano(data.amount),
                 body=ItemStandard.build_transfer_body(
                     new_owner_address=data.destination,
+                    forward_payload=data.forward_payload,
+                    forward_amount=data.forward_amount,
                 ),
             ) for data in data_list
         ]
@@ -368,7 +386,8 @@ class Wallet(Contract):
             destination: Union[Address, str],
             jetton_master_address: Union[Address, str],
             jetton_amount: Union[int, float],
-            comment: Optional[str] = None,
+            forward_payload: Optional[Cell, str] = Cell.empty(),
+            forward_amount: Optional[int, float] = 0.001,
             amount: Optional[Union[int, float]] = 0.05,
     ) -> str:
         """
@@ -377,7 +396,11 @@ class Wallet(Contract):
         :param destination: The destination address.
         :param jetton_master_address: The jetton master address.
         :param jetton_amount: The amount of jettons to transfer.
-        :param comment: An optional comment. Defaults to None.
+        :param forward_payload: Optional forward payload.
+            If a string is provided, it will be used as a transaction comment.
+            If forward_amount is greater than 0, this payload will be included with the notification to the new owner.
+        :param forward_amount: Forward amount in TON. Defaults to 0.001.
+            A notification will be sent to the new owner if the amount is greater than 0;
         :param amount: The amount to transfer. Defaults to 0.05.
         :return: The hash of the jetton transfer message.
         """
@@ -386,33 +409,29 @@ class Wallet(Contract):
         if isinstance(jetton_master_address, str):
             jetton_master_address = Address(jetton_master_address)
 
-        if comment is not None:
+        if isinstance(forward_payload, str):
             forward_payload = (
                 begin_cell()
                 .store_uint(0, 32)
-                .store_snake_string(comment)
+                .store_snake_string(forward_payload)
                 .end_cell()
             )
-        else:
-            forward_payload = Cell.empty()
 
         jetton_wallet_address = await Jetton(self.client).get_jetton_wallet_address(
             jetton_master_address=jetton_master_address.to_str(),
             owner_address=self.address.to_str(),
         )
 
-        body = Jetton.build_transfer_body(
-            recipient_address=destination,
-            response_address=self.address,
-            jetton_amount=amount_to_nano(jetton_amount),
-            forward_payload=forward_payload,
-            forward_amount=1,
-        )
-
         message_hash = await self.transfer(
             destination=jetton_wallet_address,
             amount=amount,
-            body=body
+            body=Jetton.build_transfer_body(
+                recipient_address=destination,
+                response_address=self.address,
+                jetton_amount=amount_to_nano(jetton_amount),
+                forward_payload=forward_payload,
+                forward_amount=amount_to_nano(forward_amount),
+            )
         )
 
         return message_hash
@@ -446,7 +465,7 @@ class Wallet(Contract):
                         response_address=self.address,
                         jetton_amount=amount_to_nano(data.jetton_amount),
                         forward_payload=data.forward_payload,
-                        forward_amount=1,
+                        forward_amount=amount_to_nano(data.forward_amount),
                     ),
                 )
             )

@@ -6,6 +6,16 @@ from pytoniq_core import Builder, Cell, Slice, TlbScheme, WalletMessage, HashMap
 
 
 class TransferData:
+    """
+    Data class for transferring funds.
+
+    :param destination: The destination address.
+    :param amount: The amount to transfer.
+    :param body: The body of the message. Defaults to an empty cell.
+        If a string is provided, it will be used as a transaction comment.
+    :param state_init: The state init data. Defaults to None.
+    :param other: Additional arguments (e.g. bounce, bounced ...).
+    """
 
     def __init__(
             self,
@@ -26,11 +36,25 @@ class TransferData:
 
 
 class TransferItemData:
+    """
+    Data class for transferring items.
+
+    :param destination: The destination address.
+    :param item_address: The item address.
+    :param forward_payload: Optional forward payload.
+        If a string is provided, it will be used as a transaction comment.
+        If forward_amount is greater than 0, this payload will be included with the notification to the new owner.
+    :param forward_amount: Forward amount in TON. Defaults to 0.001.
+        A notification will be sent to the new owner if the amount is greater than 0;
+    :param amount: The amount to transfer. Defaults to 0.05.
+    """
 
     def __init__(
             self,
             destination: Union[Address, str],
             item_address: Union[Address, str],
+            forward_payload: Optional[Union[Cell, str]] = Cell.empty(),
+            forward_amount: Optional[int, float] = 0.001,
             amount: Union[int, float] = 0.05,
     ) -> None:
         if isinstance(destination, str):
@@ -39,19 +63,43 @@ class TransferItemData:
         if isinstance(item_address, str):
             item_address = Address(item_address)
 
+        if isinstance(forward_payload, str):
+            forward_payload = (
+                begin_cell()
+                .store_uint(0, 32)
+                .store_snake_string(forward_payload)
+                .end_cell()
+            )
+
         self.destination = destination
         self.item_address = item_address
+        self.forward_payload = forward_payload
+        self.forward_amount = forward_amount
         self.amount = amount
 
 
 class TransferJettonData:
+    """
+    Data class for transferring jettons.
+
+    :param destination: The destination address.
+    :param jetton_master_address: The jetton master address.
+    :param jetton_amount: The amount of jettons to transfer.
+    :param forward_payload: Optional forward payload.
+        If a string is provided, it will be used as a transaction comment.
+        If forward_amount is greater than 0, this payload will be included with the notification to the new owner.
+    :param forward_amount: Forward amount in TON. Defaults to 0.001.
+        A notification will be sent to the new owner if the amount is greater than 0;
+    :param amount: The amount to transfer. Defaults to 0.05.
+    """
 
     def __init__(
             self,
             destination: Union[Address, str],
             jetton_master_address: Union[Address, str],
             jetton_amount: Union[int, float],
-            comment: Optional[str] = None,
+            forward_payload: Optional[Union[Cell, str]] = Cell.empty(),
+            forward_amount: Optional[int, float] = 0.001,
             amount: Union[int, float] = 0.05,
     ) -> None:
         if isinstance(destination, str):
@@ -60,21 +108,20 @@ class TransferJettonData:
         if isinstance(jetton_master_address, str):
             jetton_master_address = Address(jetton_master_address)
 
-        if comment is not None:
+        if isinstance(forward_payload, str):
             forward_payload = (
                 begin_cell()
                 .store_uint(0, 32)
-                .store_snake_string(comment)
+                .store_snake_string(forward_payload)
                 .end_cell()
             )
-        else:
-            forward_payload = Cell.empty()
 
         self.destination = destination
         self.jetton_master_address = jetton_master_address
         self.jetton_amount = jetton_amount
-        self.amount = amount
         self.forward_payload = forward_payload
+        self.forward_amount = forward_amount
+        self.amount = amount
 
 
 class WalletData(TlbScheme):
