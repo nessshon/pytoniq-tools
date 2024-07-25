@@ -99,12 +99,7 @@ class WalletV3Data(WalletData):
             seqno: Optional[int] = 0,
             wallet_id: Optional[int] = 698983191
     ) -> None:
-        super().__init__(
-            wallet_id=wallet_id,
-            seqno=seqno,
-            public_key=public_key,
-        )
-
+        super().__init__(public_key=public_key)
         self.public_key = public_key
         self.seqno = seqno
         self.wallet_id = wallet_id
@@ -120,11 +115,7 @@ class WalletV3Data(WalletData):
 
     @classmethod
     def deserialize(cls, cell_slice: Slice) -> WalletV3Data:
-        return cls(
-            seqno=cell_slice.load_uint(32),
-            wallet_id=cell_slice.load_uint(32),
-            public_key=cell_slice.load_bytes(32),
-        )
+        pass
 
 
 class WalletV4Data(WalletData):
@@ -136,12 +127,7 @@ class WalletV4Data(WalletData):
             wallet_id: Optional[int] = 698983191,
             plugins: Optional[Cell] = None,
     ) -> None:
-        super().__init__(
-            wallet_id=wallet_id,
-            seqno=seqno,
-            public_key=public_key,
-            plugins=plugins,
-        )
+        super().__init__(public_key=public_key)
 
         self.public_key = public_key
         self.seqno = seqno
@@ -160,12 +146,7 @@ class WalletV4Data(WalletData):
 
     @classmethod
     def deserialize(cls, cell_slice: Slice) -> WalletV4Data:
-        return cls(
-            seqno=cell_slice.load_uint(32),
-            wallet_id=cell_slice.load_uint(32),
-            public_key=cell_slice.load_bytes(32),
-            plugins=cell_slice.load_maybe_ref(),
-        )
+        pass
 
 
 class HighloadWalletV2Data(WalletData):
@@ -174,16 +155,10 @@ class HighloadWalletV2Data(WalletData):
             self,
             public_key: bytes,
             wallet_id: Optional[int] = 698983191,
-            last_cleaned: Optional[int] = None,
+            last_cleaned: Optional[int] = 0,
             old_queries: Optional[dict] = None,
     ) -> None:
-        super().__init__(
-            wallet_id=wallet_id,
-            last_cleaned=last_cleaned,
-            public_key=public_key,
-            old_queries=old_queries,
-        )
-
+        super().__init__(public_key=public_key)
         self.public_key = public_key
         self.wallet_id = wallet_id
         self.last_cleaned = last_cleaned
@@ -192,10 +167,6 @@ class HighloadWalletV2Data(WalletData):
     @classmethod
     def old_queries_serializer(cls, src: WalletMessage, dest: Builder) -> None:
         dest.store_cell(src.serialize())
-
-    @classmethod
-    def old_queries_deserializer(cls, src: Slice) -> WalletMessage:
-        return WalletMessage.deserialize(src)
 
     def serialize(self) -> Cell:
         return (
@@ -214,12 +185,4 @@ class HighloadWalletV2Data(WalletData):
 
     @classmethod
     def deserialize(cls, cell_slice: Slice) -> HighloadWalletV2Data:
-        return cls(
-            wallet_id=cell_slice.load_uint(32),
-            last_cleaned=cell_slice.load_uint(64),
-            public_key=cell_slice.load_bytes(32),
-            old_queries=cell_slice.load_dict(
-                key_length=64,
-                value_deserializer=cls.old_queries_deserializer,
-            )
-        )
+        pass

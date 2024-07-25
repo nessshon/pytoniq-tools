@@ -8,11 +8,24 @@ from ._base import Client
 
 
 class ToncenterClient(Client):
+    """
+    ToncenterClient class for interacting with the TON blockchain using AsyncTonCenterClientV3.
+
+    This class provides methods to run get methods and send messages to the blockchain,
+    with options for network selection.
+    """
+
     def __init__(
             self,
             api_key: str,
             is_testnet: Optional[bool] = False,
     ) -> None:
+        """
+        Initialize the ToncenterClient.
+
+        :param api_key: The API key for accessing the Toncenter service. You can get API key here: https://t.me/tonapibot
+        :param is_testnet: Flag to indicate if testnet configuration should be used. Defaults to False.
+        """
         self.client = AsyncTonCenterClientV3(
             network="testnet" if is_testnet else "mainnet",
             api_key=api_key,

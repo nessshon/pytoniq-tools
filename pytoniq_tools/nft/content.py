@@ -8,7 +8,7 @@ class OffchainBaseContent(TlbScheme):
     def __init__(self, uri: str) -> None:
         self.uri = uri
 
-    def serialize(self, *args) -> Cell:
+    def serialize(self) -> Cell:
         return (
             begin_cell()
             .store_uint(0x01, 8)
@@ -18,7 +18,7 @@ class OffchainBaseContent(TlbScheme):
 
     @classmethod
     def deserialize(cls, cell_slice: Slice) -> OffchainBaseContent:
-        return cls(uri=cell_slice.load_snake_string())
+        pass
 
 
 class OffchainCommonContent(TlbScheme):
@@ -26,7 +26,7 @@ class OffchainCommonContent(TlbScheme):
     def __init__(self, uri: str) -> None:
         self.uri = uri
 
-    def serialize(self, *args) -> Cell:
+    def serialize(self) -> Cell:
         return (
             begin_cell()
             .store_snake_string(self.uri)
@@ -35,7 +35,7 @@ class OffchainCommonContent(TlbScheme):
 
     @classmethod
     def deserialize(cls, cell_slice: Slice) -> OffchainCommonContent:
-        return cls(uri=cell_slice.load_snake_string())
+        pass
 
 
 class OffchainContent(TlbScheme):
@@ -44,7 +44,7 @@ class OffchainContent(TlbScheme):
         self.uri = uri
         self.suffix_uri = suffix_uri
 
-    def serialize(self, *args) -> Cell:
+    def serialize(self) -> Cell:
         return (
             begin_cell()
             .store_ref(OffchainBaseContent(self.uri).serialize())
@@ -54,7 +54,4 @@ class OffchainContent(TlbScheme):
 
     @classmethod
     def deserialize(cls, cell_slice: Slice) -> OffchainContent:
-        return cls(
-            uri=OffchainBaseContent.deserialize(cell_slice.load_ref().begin_parse()).uri,
-            suffix_uri=OffchainCommonContent.deserialize(cell_slice.load_ref().begin_parse()).uri,
-        )
+        pass

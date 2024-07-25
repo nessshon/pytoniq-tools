@@ -8,7 +8,7 @@ from pytoniq_core import Address, Cell, StateInit, MessageAny, WalletMessage, be
 from pytoniq_core.crypto.keys import mnemonic_new, mnemonic_to_private_key
 from pytoniq_core.crypto.signature import sign_message
 
-from .data import WalletV3Data, WalletV4Data, HighloadWalletV2Data
+from .data import WalletV3Data, WalletV4Data, HighloadWalletV2Data, TransferData, TransferItemData, TransferJettonData
 from ..client import Client, LiteClient, TonapiClient, ToncenterClient
 from ..contract import Contract
 from ..exceptions import UnknownClientError
@@ -18,20 +18,31 @@ from ..utils import message_to_boc_hex
 
 
 class Wallet(Contract):
+    """
+    A class representing a TON blockchain wallet.
+    """
 
     def __init__(
             self,
             client: Client,
             public_key: bytes,
             private_key: bytes,
-            seqno: Optional[int] = 0,
             wallet_id: Optional[int] = 698983191,
     ) -> None:
+        """
+        Initialize a Wallet instance.
+
+        :param client: The client to interact with the blockchain.
+        :param public_key: The public key of the wallet.
+        :param private_key: The private key of the wallet.
+        :param wallet_id: The ID of the wallet. Defaults to 698983191.
+        """
         self.client = client
         self.public_key = public_key
         self.private_key = private_key
+        self.wallet_id = wallet_id
 
-        self._data = self._create_data(public_key, seqno, wallet_id).serialize()
+        self._data = self._create_data(public_key, wallet_id=wallet_id).serialize()
         self._code = Cell.one_from_boc(self.CODE_HEX)
 
     @classmethod
@@ -42,9 +53,21 @@ class Wallet(Contract):
             wallet_id: Optional[int] = 698983191,
             **kwargs,
     ) -> Union[WalletV3Data | WalletV4Data, HighloadWalletV2Data]:
+        """
+        Create wallet data.
+
+        :param public_key: The public key of the wallet.
+        :param seqno: The sequence number. Defaults to 0.
+        :param wallet_id: The wallet ID. Defaults to 698983191.
+        :param kwargs: Additional arguments.
+        :return: Wallet data instance.
+        """
         raise NotImplementedError
 
     async def _create_deploy_msg(self) -> MessageAny:
+        """
+        Create a deploy message for the wallet.
+        """
         body = self._raw_create_transfer_msg(
             private_key=self.private_key,
             seqno=0,
@@ -62,11 +85,22 @@ class Wallet(Contract):
             cls,
             private_key: bytes,
             messages: List[WalletMessage],
-            seqno: int = 0,
-            wallet_id: int = 698983191,
+            seqno: Optional[int] = 0,
+            wallet_id: Optional[int] = 698983191,
             valid_until: Optional[int] = None,
             op_code: Optional[int] = None,
     ) -> Cell:
+        """
+        Create a raw transfer message.
+
+        :param private_key: The private key to sign the message.
+        :param messages: The list of wallet messages.
+        :param seqno: The sequence number. Defaults to 0.
+        :param wallet_id: The wallet ID. Defaults to 698983191.
+        :param valid_until: The validity timestamp. Defaults to None.
+        :param op_code: The operation code. Defaults to None.
+        :return: The serialized message cell.
+        """
         signing_message = begin_cell().store_uint(wallet_id, 32)
 
         if seqno == 0:
@@ -99,12 +133,23 @@ class Wallet(Contract):
     def create_wallet_internal_message(
             cls,
             destination: Address,
-            send_mode: int = 3,
-            value: int = 0,
-            body: Union[Cell, str] = None,
+            send_mode: Optional[int] = 3,
+            value: Optional[int] = 0,
+            body: Optional[Union[Cell, str]] = None,
             state_init: Optional[StateInit] = None,
             **kwargs,
     ) -> WalletMessage:
+        """
+        Create an internal wallet message.
+
+        :param destination: The destination address.
+        :param send_mode: The send mode. Defaults to 3.
+        :param value: The value to transfer. Defaults to 0.
+        :param body: The body of the message. Defaults to None.
+        :param state_init: The state initialization. Defaults to None.
+        :param kwargs: Additional arguments.
+        :return: The wallet message.
+        """
         if isinstance(body, str):
             body = (
                 begin_cell()
@@ -132,6 +177,13 @@ class Wallet(Contract):
             mnemonic: Union[List[str], str],
             client: Optional[Client] = None,
     ) -> Tuple[Wallet, bytes, bytes, List[str]]:
+        """
+        Create a wallet from a mnemonic phrase.
+
+        :param mnemonic: The mnemonic phrase.
+        :param client: The client to interact with the blockchain. Defaults to None.
+        :return: A tuple containing the wallet instance, public key, private key, and mnemonic phrase.
+        """
         if isinstance(mnemonic, str):
             mnemonic = mnemonic.split(" ")
 
@@ -140,10 +192,18 @@ class Wallet(Contract):
 
     @classmethod
     def create(cls) -> Tuple[Wallet, bytes, bytes, List[str]]:
+        """
+        Create a new wallet.
+
+        :return: A tuple containing the wallet instance, public key, private key, and mnemonic phrase.
+        """
         mnemonic = mnemonic_new(24)
         return cls.from_mnemonic(mnemonic)
 
     async def deploy(self) -> str:
+        """
+        Deploy the wallet to the blockchain.
+        """
         message = await self._create_deploy_msg()
         message_boc_hex, message_hash = message_to_boc_hex(message)
         await self.client.send_message(message_boc_hex)
@@ -151,6 +211,9 @@ class Wallet(Contract):
         return message_hash
 
     async def get_seqno(self) -> int:
+        """
+        Get the sequence number (seqno) of the wallet.
+        """
         method_result = await self.client.run_get_method(
             address=self.address.to_str(),
             method_name="seqno",
@@ -167,10 +230,16 @@ class Wallet(Contract):
 
         return seqno
 
-    async def raw_transfer(
+    async def _raw_transfer(
             self,
             messages: Optional[List[WalletMessage]] = None,
     ) -> str:
+        """
+        Perform a raw transfer operation.
+
+        :param messages: The list of wallet messages to transfer.
+        :return: The hash of the transfer message.
+        """
         assert len(messages) <= 4, 'For common wallet maximum messages amount is 4'
         seqno = await self.get_seqno()
 
@@ -189,15 +258,25 @@ class Wallet(Contract):
     async def transfer(
             self,
             destination: Union[Address, str],
-            amount: Union[int, float] = 0,
+            amount: Optional[Union[int, float]] = 0,
             body: Optional[Cell, str] = Cell.empty(),
             state_init: Optional[StateInit] = None,
             **kwargs
     ) -> str:
+        """
+        Transfer funds to a destination address.
+
+        :param destination: The destination address.
+        :param amount: The amount to transfer. Defaults to 0.
+        :param body: The body of the message. Defaults to an empty cell.
+        :param state_init: The state initialization. Defaults to None.
+        :param kwargs: Additional arguments.
+        :return: The hash of the transfer message.
+        """
         if isinstance(destination, str):
             destination = Address(destination)
 
-        message_hash = await self.raw_transfer(
+        message_hash = await self._raw_transfer(
             messages=[
                 self.create_wallet_internal_message(
                     destination=destination,
@@ -211,12 +290,41 @@ class Wallet(Contract):
 
         return message_hash
 
+    async def batch_transfer(self, data_list: List[TransferData]) -> str:
+        """
+        Perform a batch transfer operation.
+
+        :param data_list: The list of transfer data.
+        :return: The hash of the batch transfer message.
+        """
+        messages = [
+            self.create_wallet_internal_message(
+                destination=data.destination,
+                value=amount_to_nano(data.amount),
+                body=data.body,
+                state_init=data.state_init,
+                **data.other,
+            ) for data in data_list
+        ]
+
+        message_hash = await self._raw_transfer(messages=messages)
+
+        return message_hash
+
     async def transfer_nft(
             self,
             destination: Union[Address, str],
             item_address: Union[Address, str],
-            amount: Union[int, float] = 0.05,
+            amount: Optional[Union[int, float]] = 0.05,
     ) -> str:
+        """
+        Transfer an NFT to a destination address.
+
+        :param destination: The destination address.
+        :param item_address: The NFT item address.
+        :param amount: The amount to transfer. Defaults to 0.05.
+        :return: The hash of the NFT transfer message.
+        """
         if isinstance(destination, str):
             destination = Address(destination)
         if isinstance(item_address, str):
@@ -234,14 +342,45 @@ class Wallet(Contract):
 
         return message_hash
 
+    async def batch_nft_transfer(self, data_list: List[TransferItemData]) -> str:
+        """
+        Perform a batch NFT transfer operation.
+
+        :param data_list: The list of NFT transfer data.
+        :return: The hash of the batch NFT transfer message.
+        """
+        messages = [
+            self.create_wallet_internal_message(
+                destination=data.item_address,
+                value=amount_to_nano(data.amount),
+                body=ItemStandard.build_transfer_body(
+                    new_owner_address=data.destination,
+                ),
+            ) for data in data_list
+        ]
+
+        message_hash = await self._raw_transfer(messages=messages)
+
+        return message_hash
+
     async def transfer_jetton(
             self,
             destination: Union[Address, str],
             jetton_master_address: Union[Address, str],
             jetton_amount: Union[int, float],
             comment: Optional[str] = None,
-            amount: Union[int, float] = 0.05,
+            amount: Optional[Union[int, float]] = 0.05,
     ) -> str:
+        """
+        Transfer a jetton to a destination address.
+
+        :param destination: The destination address.
+        :param jetton_master_address: The jetton master address.
+        :param jetton_amount: The amount of jettons to transfer.
+        :param comment: An optional comment. Defaults to None.
+        :param amount: The amount to transfer. Defaults to 0.05.
+        :return: The hash of the jetton transfer message.
+        """
         if isinstance(destination, str):
             destination = Address(destination)
         if isinstance(jetton_master_address, str):
@@ -273,7 +412,45 @@ class Wallet(Contract):
         message_hash = await self.transfer(
             destination=jetton_wallet_address,
             amount=amount,
-            body=body,
+            body=body
         )
+
+        return message_hash
+
+    async def batch_jetton_transfer(self, data_list: List[TransferJettonData]) -> str:
+        """
+        Perform a batch jetton transfer operation.
+
+        :param data_list: The list of jetton transfer data.
+        :return: The hash of the batch jetton transfer message.
+        """
+        messages = []
+        jetton_master_address = None
+        jetton_wallet_address = None
+
+        for data in data_list:
+            if jetton_master_address is None or jetton_master_address != data.jetton_master_address:
+                jetton_wallet_address = await Jetton(self.client).get_jetton_wallet_address(
+                    jetton_master_address=data.jetton_master_address.to_str(),
+                    owner_address=self.address.to_str(),
+                )
+                jetton_master_address = data.jetton_master_address
+                jetton_wallet_address = jetton_wallet_address
+
+            messages.append(
+                self.create_wallet_internal_message(
+                    destination=jetton_wallet_address,
+                    value=amount_to_nano(data.amount),
+                    body=Jetton.build_transfer_body(
+                        recipient_address=data.destination,
+                        response_address=self.address,
+                        jetton_amount=amount_to_nano(data.jetton_amount),
+                        forward_payload=data.forward_payload,
+                        forward_amount=1,
+                    ),
+                )
+            )
+
+        message_hash = await self._raw_transfer(messages=messages)
 
         return message_hash

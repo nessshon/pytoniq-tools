@@ -18,6 +18,5 @@ class ItemStandard(Item):
             index=index,
             collection_address=collection_address,
         )
-
         self._data = data.serialize()
         self._code = Cell.one_from_boc(self.CODE_HEX)

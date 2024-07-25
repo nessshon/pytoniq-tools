@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from pytoniq_core import Address, Cell, begin_cell
 
 from ..op_codes import *
@@ -12,11 +14,11 @@ class Item(Contract):
     def build_transfer_body(
             cls,
             new_owner_address: Address,
-            response_address: Address = None,
-            custom_payload: Cell = Cell.empty(),
-            forward_payload: Cell = Cell.empty(),
-            forward_amount: int = 0,
-            query_id: int = 0,
+            response_address: Optional[Address] = None,
+            custom_payload: Optional[Cell] = Cell.empty(),
+            forward_payload: Optional[Cell] = Cell.empty(),
+            forward_amount: Optional[int] = 0,
+            query_id: Optional[int] = 0,
     ) -> Cell:
         return (
             begin_cell()
@@ -34,8 +36,8 @@ class Item(Contract):
     def build_ownership_assigned_body(
             cls,
             prev_owner_address: Address,
-            forward_payload: Cell = Cell.empty(),
-            query_id: int = 0,
+            forward_payload: Optional[Cell] = Cell.empty(),
+            query_id: Optional[int] = 0,
     ) -> Cell:
         return (
             begin_cell()

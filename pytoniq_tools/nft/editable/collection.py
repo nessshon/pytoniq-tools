@@ -29,7 +29,6 @@ class CollectionEditable(Collection):
             royalty_params=royalty_params,
             nft_item_code=ItemEditable.CODE_HEX,
         )
-
         self._data = data.serialize()
         self._code = Cell.one_from_boc(self.CODE_HEX)
 
@@ -39,9 +38,9 @@ class CollectionEditable(Collection):
             index: int,
             content: OffchainCommonContent,
             owner_address: Address,
-            editor_address: Address = None,
-            amount: int = 20000000,
-            query_id: int = 0,
+            editor_address: Optional[Address] = None,
+            amount: Optional[int] = 20000000,
+            query_id: Optional[int] = 0,
     ) -> Cell:
         """
         Builds the body of the mint transaction.
@@ -75,7 +74,7 @@ class CollectionEditable(Collection):
             cls,
             data: List[Tuple[OffchainCommonContent, Address, Optional[Address]]],
             from_index: int,
-            amount_per_one: int = 20000000,
+            amount_per_one: Optional[int] = 20000000,
     ) -> Cell:
         """
         Builds the body of the batch mint transaction.
@@ -118,7 +117,7 @@ class CollectionEditable(Collection):
             cls,
             content: OffchainContent,
             royalty_params: RoyaltyParams,
-            query_id: int = 0
+            query_id: Optional[int] = 0
     ) -> Cell:
         """
         Builds the body of the edit content transaction.
@@ -141,7 +140,7 @@ class CollectionEditable(Collection):
     def build_change_owner_body(
             cls,
             owner_address: Address,
-            query_id: int = 0,
+            query_id: Optional[int] = 0,
     ) -> Cell:
         """
         Builds the body of the change owner transaction.

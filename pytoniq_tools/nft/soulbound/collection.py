@@ -29,7 +29,6 @@ class CollectionSoulbound(Collection):
             royalty_params=royalty_params,
             nft_item_code=ItemSoulbound.CODE_HEX,
         )
-
         self._data = data.serialize()
         self._code = Cell.one_from_boc(self.CODE_HEX)
 
@@ -39,10 +38,10 @@ class CollectionSoulbound(Collection):
             index: int,
             content: OffchainCommonContent,
             owner_address: Address,
-            authority_address: Address = None,
-            revoked_at: int = 0,
-            amount: int = 20000000,
-            query_id: int = 0,
+            authority_address: Optional[Address] = None,
+            revoked_at: Optional[int] = 0,
+            amount: Optional[int] = 20000000,
+            query_id: Optional[int] = 0,
     ) -> Cell:
         """
         Builds the body of the mint transaction.
@@ -78,7 +77,7 @@ class CollectionSoulbound(Collection):
             cls,
             data: List[Tuple[OffchainCommonContent, Address, Optional[Address], Optional[int]]],
             from_index: int,
-            amount_per_one: int = 20000000,
+            amount_per_one: Optional[int] = 20000000,
     ) -> Cell:
         """
         Builds the body of the batch mint transaction.

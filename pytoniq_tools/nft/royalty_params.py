@@ -15,7 +15,7 @@ class RoyaltyParams(TlbScheme):
         self.factor = factor
         self.address = address
 
-    def serialize(self, *args) -> Cell:
+    def serialize(self) -> Cell:
         return (
             begin_cell()
             .store_uint(self.factor, 16)
@@ -26,8 +26,4 @@ class RoyaltyParams(TlbScheme):
 
     @classmethod
     def deserialize(cls, cell_slice: Slice) -> RoyaltyParams:
-        return cls(
-            factor=cell_slice.load_uint(16),
-            base=cell_slice.load_uint(16),
-            address=cell_slice.load_address(),
-        )
+        pass

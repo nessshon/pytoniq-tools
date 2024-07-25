@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from pytoniq_core import Address, Cell, begin_cell
 
 from .._base.item import Item
@@ -20,7 +22,6 @@ class ItemEditable(Item):
             index=index,
             collection_address=collection_address,
         )
-
         self._data = data.serialize()
         self._code = Cell.one_from_boc(self.CODE_HEX)
 
@@ -28,7 +29,7 @@ class ItemEditable(Item):
     def build_edit_content_body(
             cls,
             content: OffchainCommonContent,
-            query_id: int = 0,
+            query_id: Optional[int] = 0,
     ) -> Cell:
         """
         Builds the body of the edit item content transaction.
@@ -49,11 +50,11 @@ class ItemEditable(Item):
     def build_change_editorship_body(
             cls,
             editor_address: Address,
-            response_address: Address = None,
-            custom_payload: Cell = Cell.empty(),
-            forward_payload: Cell = Cell.empty(),
-            forward_amount: int = 0,
-            query_id: int = 0,
+            response_address: Optional[Address] = None,
+            custom_payload: Optional[Cell] = Cell.empty(),
+            forward_payload: Optional[Cell] = Cell.empty(),
+            forward_amount: Optional[int] = 0,
+            query_id: Optional[int] = 0,
     ) -> Cell:
         """
         Builds the body of the change item editorship transaction.

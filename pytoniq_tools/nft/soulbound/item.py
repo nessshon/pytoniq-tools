@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from pytoniq_core import Cell, begin_cell, Address
 
 from .._base.item import Item
@@ -19,12 +21,11 @@ class ItemSoulbound(Item):
             index=index,
             collection_address=collection_address,
         )
-
         self._data = data.serialize()
         self._code = Cell.one_from_boc(self.CODE_HEX)
 
     @classmethod
-    def build_revoke_body(cls, query_id: int = 0) -> Cell:
+    def build_revoke_body(cls, query_id: Optional[int] = 0) -> Cell:
         """
         Builds the body of the revoke item transaction.
 
@@ -40,7 +41,7 @@ class ItemSoulbound(Item):
         )
 
     @classmethod
-    def build_destroy_body(cls, query_id: int = 0) -> Cell:
+    def build_destroy_body(cls, query_id: Optional[int] = 0) -> Cell:
         """
         Builds the body of the destroy item transaction.
 
@@ -59,10 +60,10 @@ class ItemSoulbound(Item):
     def build_transfer_body(
             cls,
             new_owner_address: Address,
-            response_address: Address = None,
-            custom_payload: Cell = Cell.empty(),
-            forward_payload: Cell = Cell.empty(),
-            forward_amount: int = 0,
-            query_id: int = 0,
+            response_address: Optional[Address] = None,
+            custom_payload: Optional[Cell] = Cell.empty(),
+            forward_payload: Optional[Cell] = Cell.empty(),
+            forward_amount: Optional[int] = 0,
+            query_id: Optional[int] = 0,
     ) -> Cell:
         raise NotImplementedError("`Transfer item` is not supported in the SoulBound NFT Contract.")

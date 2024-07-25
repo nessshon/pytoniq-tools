@@ -6,6 +6,12 @@ from ._base import Client
 
 
 class LiteClient(Client):
+    """
+    LiteClient class for interacting with the TON blockchain using LiteBalancer.
+
+    This class provides methods to run get methods and send messages to the blockchain,
+    with options for configuration and network selection.
+    """
 
     def __init__(
             self,
@@ -13,6 +19,19 @@ class LiteClient(Client):
             is_testnet: Optional[bool] = False,
             trust_level: Optional[int] = 2,
     ) -> None:
+        """
+        Initialize the LiteClient.
+
+        :param config: The configuration dictionary for LiteBalancer. Defaults to None.
+            You can pass your own config from a private lite server,
+            which can be acquired from the https://t.me/liteserver_bot.
+        :param is_testnet: Flag to indicate if testnet configuration should be used. Defaults to False.
+        :param trust_level: The trust level for the LiteBalancer.
+            Defines the level of trust for Liteserver communication. Defaults to 2.
+            For trustless communication with Liteservers, there are "Proofs" in TON. The trust_level argument
+            in the LiteClient constructor defines how much you trust the Liteserver you communicate with.
+            Refer to the documentation for more details: https://yungwine.gitbook.io/pytoniq-doc/liteclient/trust-levels
+        """
         if config is not None:
             self.client = LiteBalancer.from_config(config=config, trust_level=trust_level)
         elif is_testnet:
