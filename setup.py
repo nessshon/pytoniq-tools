@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pytoniq-tools",
-    version="0.0.8",
+    version="0.0.9",
     author="nessshon",
     description="Pytoniq Tools is a high-level OOP library for Python designed for interacting with the TON. It is built on top of three of the most popular libraries for working with TON in Python: pytoniq, pytonapi, and pytoncenter.",
     long_description=long_description,
