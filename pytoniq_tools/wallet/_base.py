@@ -66,7 +66,7 @@ class Wallet(Contract):
 
     async def _create_deploy_msg(self) -> MessageAny:
         """
-        Create a deploy message for the wallet.
+        Create a deployment message for the wallet.
         """
         body = self._raw_create_transfer_msg(
             private_key=self.private_key,

@@ -18,7 +18,7 @@ async def main() -> None:
         destination=DESTINATION_ADDRESS,
         jetton_master_address=JETTON_MASTER_ADDRESS,
         jetton_amount=0.01,
-        comment="Hello from pytoniq-tools!"
+        forward_payload="Hello from pytoniq-tools!"
     )
 
     print("Successfully transferred!")

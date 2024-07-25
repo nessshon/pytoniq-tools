@@ -18,19 +18,19 @@ async def main() -> None:
                 destination="EQC-3ilVr-W0Uc3pLrGJElwSaFxvhXXfkiQA3EwdVBHNNess",
                 jetton_master_address="EQAiboDEv_qRrcEdrYdwbVLNOXBHwShFbtKGbQVJ2OKxY0to",
                 jetton_amount=0.01,
-                comment="Hello from pytoniq-tools!"
+                forward_payload="Hello from pytoniq-tools!"
             ),
             TransferJettonData(
                 destination="EQC-3ilVr-W0Uc3pLrGJElwSaFxvhXXfkiQA3EwdVBHNNess",
                 jetton_master_address="EQAiboDEv_qRrcEdrYdwbVLNOXBHwShFbtKGbQVJ2OKxY0to",
                 jetton_amount=0.01,
-                comment="Hello from pytoniq-tools!"
+                forward_payload="Hello from pytoniq-tools!"
             ),
             TransferJettonData(
                 destination="EQC-3ilVr-W0Uc3pLrGJElwSaFxvhXXfkiQA3EwdVBHNNess",
                 jetton_master_address="EQAiboDEv_qRrcEdrYdwbVLNOXBHwShFbtKGbQVJ2OKxY0to",
                 jetton_amount=0.01,
-                comment="Hello from pytoniq-tools!"
+                forward_payload="Hello from pytoniq-tools!"
             )
         ]
     )

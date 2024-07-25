@@ -16,7 +16,8 @@ async def main() -> None:
 
     tx_hash = await wallet.transfer_nft(
         destination=DESTINATION_ADDRESS,
-        item_address=ITEM_ADDRESS
+        item_address=ITEM_ADDRESS,
+        forward_payload="Hello from pytoniq-tools!"
     )
 
     print("Successfully transferred!")

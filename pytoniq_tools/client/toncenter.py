@@ -23,7 +23,8 @@ class ToncenterClient(Client):
         """
         Initialize the ToncenterClient.
 
-        :param api_key: The API key for accessing the Toncenter service. You can get API key here: https://t.me/tonapibot
+        :param api_key: The API key for accessing the Toncenter service.
+            You can get API key here: https://t.me/tonapibot
         :param is_testnet: Flag to indicate if testnet configuration should be used. Defaults to False.
         """
         self.client = AsyncTonCenterClientV3(
