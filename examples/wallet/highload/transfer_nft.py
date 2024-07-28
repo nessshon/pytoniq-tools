@@ -15,16 +15,16 @@ async def main() -> None:
     tx_hash = await wallet.transfer_nft(
         data_list=[
             TransferItemData(
-                destination="EQC-3ilVr-W0Uc3pLrGJElwSaFxvhXXfkiQA3EwdVBHNNess",
-                item_address="kQDoPmq9iKF3osjRRpINtCTLTYZFNr9k-QkwRdiw1IRUj0fI",
+                destination="UQ...",
+                item_address="EQ...",
             ),
             TransferItemData(
-                destination="EQC-3ilVr-W0Uc3pLrGJElwSaFxvhXXfkiQA3EwdVBHNNess",
-                item_address="kQDLWjSFwezDiwSojGlZkaFVu_daicdtQemnBSdOthm5KcIF",
+                destination="UQ...",
+                item_address="EQ...",
             ),
             TransferItemData(
-                destination="EQC-3ilVr-W0Uc3pLrGJElwSaFxvhXXfkiQA3EwdVBHNNess",
-                item_address="kQCYGRVH10NsXIZNdpwEkenNMrMpy11SdyyE_B1p6eos7Jdw",
+                destination="UQ...",
+                item_address="EQ...",
             ),
         ]
     )

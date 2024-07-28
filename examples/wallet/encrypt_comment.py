@@ -6,19 +6,22 @@ IS_TESTNET = True
 
 MNEMONIC = []
 
-DESTINATION_ADDRESS = "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c"
-JETTON_MASTER_ADDRESS = "EQAiboDEv_qRrcEdrYdwbVLNOXBHwShFbtKGbQVJ2OKxY0to"  # noqa
-
 
 async def main() -> None:
     client = TonapiClient(api_key=API_KEY, is_testnet=IS_TESTNET)
     wallet, public_key, private_key, mnemonic = WalletV4R2.from_mnemonic(MNEMONIC, client)
 
-    tx_hash = await wallet.transfer_jetton(
-        destination=DESTINATION_ADDRESS,
-        jetton_master_address=JETTON_MASTER_ADDRESS,
-        jetton_amount=0.01,
-        forward_payload="Hello from pytoniq-tools!"
+    destination = "UQ..."
+
+    body = await wallet.build_encrypted_comment_body(
+        text="Hello from pytoniq-tools!",
+        destination=destination,
+    )
+
+    tx_hash = await wallet.transfer(
+        destination=destination,
+        amount=0.01,
+        body=body,
     )
 
     print("Successfully transferred!")

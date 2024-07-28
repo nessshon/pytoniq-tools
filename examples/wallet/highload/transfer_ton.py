@@ -15,17 +15,17 @@ async def main() -> None:
     tx_hash = await wallet.transfer(
         data_list=[
             TransferData(
-                destination="EQBANwCCQiMCjtBhFhnI8q18qetmYIuMqhZJpXCt0cgBj2YK",
+                destination="UQ...",
                 amount=0.01,
                 body="Hello from pytoniq-tools!",
             ),
             TransferData(
-                destination="EQBANwCCQiMCjtBhFhnI8q18qetmYIuMqhZJpXCt0cgBj2YK",
+                destination="UQ...",
                 amount=0.01,
                 body="Hello from pytoniq-tools!",
             ),
             TransferData(
-                destination="EQBANwCCQiMCjtBhFhnI8q18qetmYIuMqhZJpXCt0cgBj2YK",
+                destination="UQ...",
                 amount=0.01,
                 body="Hello from pytoniq-tools!",
             ),

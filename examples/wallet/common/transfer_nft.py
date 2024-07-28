@@ -11,9 +11,13 @@ async def main() -> None:
     client = TonapiClient(api_key=API_KEY, is_testnet=IS_TESTNET)
     wallet, public_key, private_key, mnemonic = WalletV4R2.from_mnemonic(MNEMONIC, client)
 
-    tx_hash = await wallet.deploy()
+    tx_hash = await wallet.transfer_nft(
+        destination="UQ...",
+        item_address="EQ...",
+        forward_payload="Hello from pytoniq-tools!"
+    )
 
-    print(f"Deployed wallet address: {wallet.address.to_str()}")
+    print("Successfully transferred!")
     print(f"Transaction hash: {tx_hash}")
 
 

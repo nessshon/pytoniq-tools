@@ -15,20 +15,20 @@ async def main() -> None:
     tx_hash = await wallet.transfer_jetton(
         data_list=[
             TransferJettonData(
-                destination="EQC-3ilVr-W0Uc3pLrGJElwSaFxvhXXfkiQA3EwdVBHNNess",
-                jetton_master_address="EQAiboDEv_qRrcEdrYdwbVLNOXBHwShFbtKGbQVJ2OKxY0to",
+                destination="UQ...",
+                jetton_master_address="EQ...",
                 jetton_amount=0.01,
                 forward_payload="Hello from pytoniq-tools!"
             ),
             TransferJettonData(
-                destination="EQC-3ilVr-W0Uc3pLrGJElwSaFxvhXXfkiQA3EwdVBHNNess",
-                jetton_master_address="EQAiboDEv_qRrcEdrYdwbVLNOXBHwShFbtKGbQVJ2OKxY0to",
+                destination="UQ...",
+                jetton_master_address="EQ...",
                 jetton_amount=0.01,
                 forward_payload="Hello from pytoniq-tools!"
             ),
             TransferJettonData(
-                destination="EQC-3ilVr-W0Uc3pLrGJElwSaFxvhXXfkiQA3EwdVBHNNess",
-                jetton_master_address="EQAiboDEv_qRrcEdrYdwbVLNOXBHwShFbtKGbQVJ2OKxY0to",
+                destination="UQ...",
+                jetton_master_address="EQ...",
                 jetton_amount=0.01,
                 forward_payload="Hello from pytoniq-tools!"
             )

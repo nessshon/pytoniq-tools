@@ -15,23 +15,23 @@ async def main() -> None:
     tx_hash = await wallet.batch_nft_transfer(
         data_list=[
             TransferItemData(
-                destination="Destination address",
-                item_address="Item address",
+                destination="UQ...",
+                item_address="EQ..",
                 forward_payload="Hello from pytoniq-tools!",
             ),
             TransferItemData(
-                destination="Destination address",
-                item_address="Item address",
+                destination="UQ...",
+                item_address="EQ..",
                 forward_payload="Hello from pytoniq-tools!",
             ),
             TransferItemData(
-                destination="Destination address",
-                item_address="Item address",
+                destination="UQ...",
+                item_address="EQ..",
                 forward_payload="Hello from pytoniq-tools!",
             ),
             TransferItemData(
-                destination="Destination address",
-                item_address="Item address",
+                destination="UQ...",
+                item_address="EQ..",
                 forward_payload="Hello from pytoniq-tools!",
             )
         ]

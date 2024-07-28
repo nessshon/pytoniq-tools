@@ -12,7 +12,7 @@ async def main() -> None:
     wallet, public_key, private_key, mnemonic = WalletV4R2.from_mnemonic(MNEMONIC, client)
 
     tx_hash = await wallet.transfer(
-        destination=wallet.address,
+        destination="UQ...",
         amount=0.01,
         body="Hello from pytoniq-tools!",
     )

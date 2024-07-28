@@ -6,17 +6,15 @@ IS_TESTNET = True
 
 MNEMONIC = []
 
-DESTINATION_ADDRESS = ""
-ITEM_ADDRESS = ""
-
 
 async def main() -> None:
     client = TonapiClient(api_key=API_KEY, is_testnet=IS_TESTNET)
     wallet, public_key, private_key, mnemonic = WalletV4R2.from_mnemonic(MNEMONIC, client)
 
-    tx_hash = await wallet.transfer_nft(
-        destination=DESTINATION_ADDRESS,
-        item_address=ITEM_ADDRESS,
+    tx_hash = await wallet.transfer_jetton(
+        destination="UQ...",
+        jetton_master_address="EQ...",
+        jetton_amount=0.01,
         forward_payload="Hello from pytoniq-tools!"
     )
 
