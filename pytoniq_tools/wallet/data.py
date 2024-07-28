@@ -203,13 +203,11 @@ class HighloadWalletV2Data(WalletData):
             public_key: bytes,
             wallet_id: Optional[int] = 698983191,
             last_cleaned: Optional[int] = 0,
-            old_queries: Optional[dict] = None,
     ) -> None:
         super().__init__(public_key=public_key)
         self.public_key = public_key
         self.wallet_id = wallet_id
         self.last_cleaned = last_cleaned
-        self.old_queries = old_queries
 
     @classmethod
     def old_queries_serializer(cls, src: WalletMessage, dest: Builder) -> None:

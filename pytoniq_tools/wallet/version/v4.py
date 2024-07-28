@@ -51,9 +51,8 @@ class WalletV4R1(Wallet):
         """
         return WalletV4Data(public_key=public_key)
 
-    @classmethod
     def _raw_create_transfer_msg(
-            cls,
+            self,
             private_key: bytes,
             messages: List[WalletMessage],
             seqno: int = 0,

@@ -3,7 +3,14 @@ from __future__ import annotations
 from typing import List, Optional, Tuple, Union
 
 from pytoniq.contract.utils import generate_query_id
-from pytoniq_core import WalletMessage, Cell, begin_cell, HashMap, MessageAny, Builder
+from pytoniq_core import (
+    Builder,
+    Cell,
+    HashMap,
+    MessageAny,
+    WalletMessage,
+    begin_cell,
+)
 from pytoniq_core.crypto.signature import sign_message
 
 from ...client import Client
@@ -98,9 +105,8 @@ class HighloadWalletV2(Wallet):
             body=body,
         )
 
-    @classmethod
     def _raw_create_transfer_msg(  # noqa
-            cls,
+            self,
             private_key: bytes,
             messages: List[WalletMessage],
             wallet_id: Optional[int] = 698983191,
