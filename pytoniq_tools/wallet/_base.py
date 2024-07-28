@@ -4,17 +4,42 @@ import time
 from typing import Optional, List, Union, Tuple
 
 from pytonapi.utils import amount_to_nano
-from pytoniq_core import Address, Cell, StateInit, MessageAny, WalletMessage, begin_cell
-from pytoniq_core.crypto.keys import mnemonic_new, mnemonic_to_private_key
+from pytoniq_core import (
+    Address,
+    Cell,
+    StateInit,
+    MessageAny,
+    WalletMessage,
+    begin_cell,
+)
+from pytoniq_core.crypto.keys import (
+    mnemonic_new,
+    mnemonic_to_private_key,
+)
 from pytoniq_core.crypto.signature import sign_message
 
-from .data import WalletV3Data, WalletV4Data, HighloadWalletV2Data, TransferData, TransferItemData, TransferJettonData
-from ..client import Client, LiteClient, TonapiClient, ToncenterClient
+from .data import (
+    WalletV3Data,
+    WalletV4Data,
+    HighloadWalletV2Data,
+    TransferData,
+    TransferItemData,
+    TransferJettonData,
+)
+from ..client import (
+    Client,
+    LiteClient,
+    TonapiClient,
+    ToncenterClient,
+)
 from ..contract import Contract
 from ..exceptions import UnknownClientError
 from ..jetton import Jetton
 from ..nft import ItemStandard
-from ..utils import message_to_boc_hex
+from ..utils import (
+    create_encrypted_comment_cell,
+    message_to_boc_hex,
+)
 
 
 class Wallet(Contract):
@@ -80,9 +105,8 @@ class Wallet(Contract):
             body=body,
         )
 
-    @classmethod
     def _raw_create_transfer_msg(
-            cls,
+            self,
             private_key: bytes,
             messages: List[WalletMessage],
             seqno: Optional[int] = 0,
@@ -210,17 +234,46 @@ class Wallet(Contract):
 
         return message_hash
 
-    async def get_seqno(self) -> int:
+    async def get_seqno(self, address: Optional[Union[Address, str]] = None) -> int:
         """
         Get the sequence number (seqno) of the wallet.
         """
+        if address is None:
+            address = self.address.to_str()
+        else:
+            if isinstance(address, Address):
+                address = address.to_str()
+
         method_result = await self.client.run_get_method(
-            address=self.address.to_str(),
+            address=address,
             method_name="seqno",
         )
 
         if isinstance(self.client, TonapiClient):
             seqno = int(method_result.decoded.get("state", 0))
+        elif isinstance(self.client, ToncenterClient):
+            seqno = int(method_result.stack[0].value, 16)
+        elif isinstance(self.client, LiteClient):
+            seqno = int(method_result[0])
+        else:
+            raise UnknownClientError(self.client.__class__.__name__)
+
+        return seqno
+
+    async def get_public_key(self, address: Union[Address, str]) -> int:
+        if address is None:
+            address = self.address.to_str()
+        else:
+            if isinstance(address, Address):
+                address = address.to_str()
+
+        method_result = await self.client.run_get_method(
+            address=address,
+            method_name="get_public_key",
+        )
+        print(method_result)
+        if isinstance(self.client, TonapiClient):
+            seqno = int(method_result.decoded.get("public_key", 0))
         elif isinstance(self.client, ToncenterClient):
             seqno = int(method_result.stack[0].value, 16)
         elif isinstance(self.client, LiteClient):
@@ -473,3 +526,16 @@ class Wallet(Contract):
         message_hash = await self._raw_transfer(messages=messages)
 
         return message_hash
+
+    async def build_encrypted_comment_body(self, text: str, destination: Union[Address, str]) -> Cell:
+        if isinstance(destination, str):
+            destination = Address(destination)
+
+        their_key = await self.get_public_key(address=destination)
+
+        return create_encrypted_comment_cell(
+            text=text,
+            sender_address=self.address,
+            our_private_key=self.private_key,
+            their_public_key=their_key,
+        )
