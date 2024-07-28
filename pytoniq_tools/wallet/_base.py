@@ -271,7 +271,7 @@ class Wallet(Contract):
             address=address,
             method_name="get_public_key",
         )
-        print(method_result)
+
         if isinstance(self.client, TonapiClient):
             seqno = int(method_result.decoded.get("public_key", 0))
         elif isinstance(self.client, ToncenterClient):
